@@ -4,18 +4,25 @@ import com.insatgl.BankAccountManager.api.commands.commands.CreateAccountCommand
 import com.insatgl.BankAccountManager.api.commands.commands.CreditAccountCommand;
 import com.insatgl.BankAccountManager.api.commands.commands.DebitAccountCommand;
 import com.insatgl.BankAccountManager.api.commands.enums.AccountStatus;
+import com.insatgl.BankAccountManager.api.commands.enums.EventsType;
 import com.insatgl.BankAccountManager.api.commands.events.AccountActivatedEvent;
 import com.insatgl.BankAccountManager.api.commands.events.AccountCreatedEvent;
 import com.insatgl.BankAccountManager.api.commands.events.AccountCreditedEvent;
 import com.insatgl.BankAccountManager.api.commands.events.AccountDebitedEvent;
+import com.insatgl.BankAccountManager.api.commands.model.AccountEvent;
+import com.insatgl.BankAccountManager.api.commands.repository.AccountEventDAO;
+import com.insatgl.BankAccountManager.api.commands.repository.AccountEventRepository;
+import lombok.AllArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
 import org.axonframework.spring.stereotype.Aggregate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 @Aggregate
+@AllArgsConstructor
 public class AccountAggregate {
     
     @AggregateIdentifier
@@ -43,6 +50,13 @@ public class AccountAggregate {
         this.accountId = event.getId();
         this.balance = event.getInitialBalance();
         this.status = AccountStatus.CREATED;
+        
+        try {
+        //Adding Event to mongodb
+        } catch(Exception e){
+            e.printStackTrace();
+        }
+        
         
         AggregateLifecycle.apply(new AccountActivatedEvent(
                 event.getId(),
